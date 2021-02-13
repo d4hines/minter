@@ -1,8 +1,8 @@
 {
   "scripts": {
     "gen:gql": "graphql-codegen && prettier --write server/src/generated/graphql_schema.ts client/src/generated/graphql_schema.tsx",
-    "postinstall": "bin/init-dev",
-    "start": "bin/start dev-sandbox",
+    "postinstall": "cd ./server && yarn",
+    "start": "cd ./server && npm start",
     "start:sandbox": "bin/start dev-sandbox",
     "start:testnet": "bin/start dev-testnet",
     "start:mainnet": "bin/start dev-mainnet",

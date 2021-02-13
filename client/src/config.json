@@ -1,0 +1,12 @@
+{
+	"api_root": "http://localhost:3300",
+	"rpc": "https://delphinet-tezos.giganode.io",
+	"network": "delphinet",
+	"bcd": {
+		"api": "https://api.better-call.dev",
+		"gui": "https://better-call.dev"
+	},
+	"contracts": {
+		"nftFaucet": "KT19KqUpbidestowzAVk1jift4EoDCDb8uC8"
+	}
+}

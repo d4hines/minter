@@ -60,7 +60,6 @@ build/Release
 /client/build
 config/minter.mainnet.json
 config/minter.testnet.json
-client/src/config.json
 server/src/config.json
 
 # misc
@@ -79,3 +78,4 @@ nginx.vars
 
 **/*.pp.mligo
 **/*.pp.ligo
+server/tmp

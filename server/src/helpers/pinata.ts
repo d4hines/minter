@@ -3,10 +3,14 @@ import fs from 'fs';
 import url from 'url';
 import sharp from 'sharp';
 import FormData from 'form-data';
-import { promisify } from 'util';
-import { ipfsConfig } from './ipfs';
 
-const readFileAsync = promisify(fs.readFile);
+// TODO: Move this configuration to a JSON definition
+const ipfsConfig = {
+  apiUrl: 'http://ipfs:5001',
+  gatewayUrl: 'http://127.0.0.1:8080/',
+  pinataGatewayUrl: 'https://gateway.pinata.cloud/',
+  publicGatewayUrl: 'https://cloudflare-ipfs.com/'
+};
 
 // Configuration
 
@@ -15,24 +19,17 @@ export interface PinataConfig {
   apiSecret: string;
 }
 
-export async function getPinataConfig(): Promise<PinataConfig | null> {
-  try {
-    const path = url.resolve(__dirname, './config.json');
-    const config = JSON.parse(await readFileAsync(path, { encoding: 'utf8' }));
-    const apiKey = config?.pinata?.apiKey;
-    const apiSecret = config?.pinata?.apiSecret;
-
-    if (!(typeof apiKey === 'string' && typeof apiSecret === 'string')) {
-      return null;
-    }
-
-    return {
-      apiKey,
-      apiSecret
-    };
-  } catch (e) {
-    return null;
+export async function getPinataConfig(): Promise<PinataConfig> {
+  const apiKey = process.env.PINATA_KEY;
+  const apiSecret = process.env.PINATA_SECRET;
+  if (!(typeof apiKey === 'string' && typeof apiSecret === 'string')) {
+    throw new Error('Missing Pinata API keys.');
   }
+
+  return {
+    apiKey,
+    apiSecret
+  };
 }
 
 // Helper Functions
@@ -98,7 +95,6 @@ export async function uploadJSONToPinata(
 
   const pinataData = pinataRes.data;
   const cid = pinataData.IpfsHash;
-
   return {
     cid,
     size: pinataData.PinSize,

@@ -38,7 +38,9 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
+    "prestart": "echo 'PUBLIC_URL=http://localhost:3000' > .env",
     "start": "react-scripts start",
+    "prebuild": "echo 'PUBLIC_URL=d4hines-openminter.surge.sh' > .env ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

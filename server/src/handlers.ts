@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
+import { mintTokenServerSide } from './lib/nfts/actions';
+import { TezosToolkit } from '@taquito/taquito';
+
 import {
   PinataConfig,
   uploadImageWithThumbnailToPinata,
   uploadJSONToPinata
 } from './helpers/pinata';
-import { uploadDataToIpfs } from './helpers/ipfs';
-import fs from 'fs';
 
 export async function handleIpfsFileUpload(
-  pinataConfig: PinataConfig | null,
+  pinataConfig: PinataConfig,
   req: Request,
   res: Response
 ) {
@@ -20,15 +21,10 @@ export async function handleIpfsFileUpload(
   }
 
   try {
-    if (pinataConfig) {
-      const content = await uploadImageWithThumbnailToPinata(
-        pinataConfig,
-        file.tempFilePath
-      );
-      return res.status(200).json(content);
-    }
-    const data = fs.readFileSync(file.tempFilePath);
-    const content = await uploadDataToIpfs(data);
+    const content = await uploadImageWithThumbnailToPinata(
+      pinataConfig,
+      file.tempFilePath
+    );
     return res.status(200).json(content);
   } catch (e) {
     return res.status(500).json({
@@ -38,7 +34,7 @@ export async function handleIpfsFileUpload(
 }
 
 export async function handleIpfsJSONUpload(
-  pinataConfig: PinataConfig | null,
+  pinataConfig: PinataConfig,
   req: Request,
   res: Response
 ) {
@@ -49,16 +45,43 @@ export async function handleIpfsJSONUpload(
   }
 
   try {
-    if (pinataConfig) {
-      const content = await uploadJSONToPinata(pinataConfig, req.body);
-      return res.status(200).json(content);
-    }
-
-    const content = await uploadDataToIpfs(req.body);
+    const content = await uploadJSONToPinata(pinataConfig, req.body);
     return res.status(200).json(content);
   } catch (e) {
+    console.error(e);
     return res.status(500).json({
       error: 'JSON upload failed'
+    });
+  }
+}
+
+export async function handleMintToken(
+  owner: string,
+  address: string,
+  toolkit: TezosToolkit,
+  req: Request,
+  res: Response
+) {
+  if (req.body === undefined) {
+    return res.status(500).json({
+      error: 'Could not retrieve JSON request body'
+    });
+  }
+
+  try {
+    // we could get a lot more data from this using
+    // the revealOperation method
+    const { opHash } = await mintTokenServerSide(
+      owner,
+      toolkit,
+      address,
+      req.body
+    );
+    return res.status(200).json({ opHash });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      error: 'Mint Token Failed'
     });
   }
 }

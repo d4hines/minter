@@ -1,6 +1,7 @@
 import axios from 'axios';
-
-const root = process.env.REACT_APP_API_ROOT;
+import FormData from 'form-data';
+import { File } from "web-file-polyfill";
+import { api_root } from '../../../../client/src/config.json';
 
 export interface IpfsContent {
   cid: string;
@@ -15,13 +16,13 @@ export interface IpfsResponse extends IpfsContent {
 }
 
 export async function uploadJSONToIpfs(data: any) {
-  return axios.post<IpfsResponse>(`${root}/ipfs-json-upload`, data);
+  return axios.post<IpfsResponse>(`${api_root}/ipfs-json-upload`, data);
 }
 
-export async function uploadFiletoIpfs(file: File) {
+export async function uploadFiletoIpfs(file: typeof File) {
   const formData = new FormData();
   formData.append('file', file);
-  return axios.post<IpfsResponse>(`${root}/ipfs-file-upload`, formData);
+  return axios.post<IpfsResponse>(`${api_root}/ipfs-file-upload`, formData);
 }
 
 // URI Utils

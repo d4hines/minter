@@ -59,6 +59,7 @@ export async function handleMintToken(
   owner: string,
   address: string,
   toolkit: TezosToolkit,
+  pinataConfig: PinataConfig,
   req: Request,
   res: Response
 ) {
@@ -75,7 +76,8 @@ export async function handleMintToken(
       owner,
       toolkit,
       address,
-      req.body
+      req.body,
+      pinataConfig
     );
     return res.status(200).json({ opHash });
   } catch (e) {

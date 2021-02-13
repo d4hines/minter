@@ -56,7 +56,7 @@ async function createHttpServer(app: Express) {
   });
 
   app.route('/mint-token').post((req, res) => {
-    return handleMintToken(owner, address, toolkit, req, res);
+    return handleMintToken(owner, address, toolkit, pinataConfig, req, res);
   });
 
   const httpServer = http.createServer(app);
